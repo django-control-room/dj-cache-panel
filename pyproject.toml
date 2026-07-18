@@ -60,10 +60,10 @@ build = [
 ]
 
 [project.urls]
-Homepage = "https://yassi.github.io/dj-cache-panel/"
-Documentation = "https://yassi.github.io/dj-cache-panel/"
-Repository = "https://github.com/yassi/dj-cache-panel"
-"Bug Tracker" = "https://github.com/yassi/dj-cache-panel/issues"
+Homepage = "https://django-control-room.github.io/dj-cache-panel/"
+Documentation = "https://django-control-room.github.io/dj-cache-panel/"
+Repository = "https://github.com/django-control-room/dj-cache-panel"
+"Bug Tracker" = "https://github.com/django-control-room/dj-cache-panel/issues"
 
 [tool.setuptools]
 include-package-data = true

@@ -14,7 +14,7 @@ Contributing to Django Cache Panel or setting up for local development.
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yassi/dj-cache-panel.git
+git clone https://github.com/django-control-room/dj-cache-panel.git
 cd dj-cache-panel
 ```
 

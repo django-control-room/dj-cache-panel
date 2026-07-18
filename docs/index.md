@@ -55,4 +55,4 @@ defined classes that can customize logic for these abilities.
 
 ## License
 
-MIT License - See [LICENSE](https://github.com/yassi/dj-cache-panel/blob/main/LICENSE) file for details.
+MIT License - See [LICENSE](https://github.com/django-control-room/dj-cache-panel/blob/main/LICENSE) file for details.

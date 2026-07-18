@@ -1,6 +1,6 @@
-[![Django Control Room Panel](https://img.shields.io/badge/Django%20Control%20Room-Panel-0c4b33?logo=django)](https://github.com/yassi/dj-control-room)
-[![Tests](https://github.com/yassi/dj-cache-panel/actions/workflows/test.yml/badge.svg)](https://github.com/yassi/dj-cache-panel/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/yassi/dj-cache-panel/branch/main/graph/badge.svg)](https://codecov.io/gh/yassi/dj-cache-panel)
+[![Django Control Room Panel](https://img.shields.io/badge/Django%20Control%20Room-Panel-0c4b33?logo=django)](https://github.com/django-control-room/dj-control-room)
+[![Tests](https://github.com/django-control-room/dj-cache-panel/actions/workflows/test.yml/badge.svg)](https://github.com/django-control-room/dj-cache-panel/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/django-control-room/dj-cache-panel/branch/main/graph/badge.svg)](https://codecov.io/gh/django-control-room/dj-cache-panel)
 [![PyPI version](https://badge.fury.io/py/dj-cache-panel.svg)](https://badge.fury.io/py/dj-cache-panel)
 [![Python versions](https://img.shields.io/pypi/pyversions/dj-cache-panel.svg)](https://pypi.org/project/dj-cache-panel/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -12,11 +12,11 @@
 
 A universal cache inspector for Django.
 
-![Django Cache Panel - Instance List](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/instance_list.png)
+![Django Cache Panel - Instance List](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/instance_list.png)
 
 ## Docs
 
-[https://yassi.github.io/dj-cache-panel/](https://yassi.github.io/dj-cache-panel/)
+[https://django-control-room.github.io/dj-cache-panel/](https://django-control-room.github.io/dj-cache-panel/)
 
 ## Features
 
@@ -60,20 +60,20 @@ will appear in the same places where your models appear.
 
 **NOTE:** This application does not actually introduce any model or migrations.
 
-![Admin Home](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/admin_home.png)
+![Admin Home](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/admin_home.png)
 
 ### Caches Overview
 Get a list of all your caches as well as the allowed capabilities for each cache
 
-![Instance Overview](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/instance_list.png)
+![Instance Overview](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/instance_list.png)
 
 ### Key Search
 
-![Key Search](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/key_search.png)
+![Key Search](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/key_search.png)
 
 ### Key Edits/Adds
 
-![Key Detail](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/key_detail.png)
+![Key Detail](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/key_detail.png)
 
 
 ## Installation
@@ -228,7 +228,7 @@ It is recommended that you use docker since it will automate much of dev env set
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yassi/dj-cache-panel.git
+git clone https://github.com/django-control-room/dj-cache-panel.git
 cd dj-cache-panel
 ```
 

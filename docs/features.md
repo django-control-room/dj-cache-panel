@@ -8,13 +8,13 @@ Django Cache Panel provides comprehensive cache management through Django's admi
 
 Django Cache Panel seamlessly integrates into your Django admin interface:
 
-![Admin Home](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/admin_home.png)
+![Admin Home](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/admin_home.png)
 
 ### Instance List
 
 View all configured cache backends from your `CACHES` setting:
 
-![Instance List](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/instance_list.png)
+![Instance List](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/instance_list.png)
 
 - Cache name and backend type
 - Supported operations matrix
@@ -35,7 +35,7 @@ Each cache backend displays which operations it supports:
 
 ### Search & Browse
 
-![Key Search](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/key_search.png)
+![Key Search](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/key_search.png)
 
 **For query-supported caches** (LocMem, Database, Redis):
 
@@ -50,7 +50,7 @@ Each cache backend displays which operations it supports:
 
 ### View & Edit Key Details
 
-![Key Detail](https://raw.githubusercontent.com/yassi/dj-cache-panel/main/images/key_detail.png)
+![Key Detail](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/key_detail.png)
 
 Click any key to view:
 
