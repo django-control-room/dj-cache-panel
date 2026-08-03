@@ -1,134 +1,155 @@
 {% extends "admin/dj_cache_panel/base.html" %}
-{% load i18n admin_urls static admin_list %}
+{% load i18n static dcr_icons %}
 
-{% block content %}
-<div class="module">
-    {% if caches_info %}
-    <h2>{% trans 'Cache Instances' %}</h2>
-    <br>
-    <div class="results">
-        <table id="result_list">
-            <thead>
-                <tr>
-                    <th>{% trans 'Cache Name' %}</th>
-                    <th>{% trans 'Backend' %}</th>
-                    <th style="text-align: center;">{% trans 'Query' %}</th>
-                    <th style="text-align: center;">{% trans 'Get' %}</th>
-                    <th style="text-align: center;">{% trans 'Edit' %}</th>
-                    <th style="text-align: center;">{% trans 'Add' %}</th>
-                    <th style="text-align: center;">{% trans 'Delete' %}</th>
-                    <th style="text-align: center;">{% trans 'Flush' %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cache_info in caches_info %}
-                <tr>
-                    <td>
-                        <a href="{% url 'dj_cache_panel:key_search' cache_info.name %}">
-                            <strong>{{ cache_info.name }}</strong>
-                        </a>
-                    </td>
-                    <td>
-                        <code class="backend-name">{{ cache_info.backend_short }}</code>
-                        {% if cache_info.error %}
-                        <br><span class="backend-error">{{ cache_info.error }}</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.query %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports key listing/search' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Key listing not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.get_key %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports getting key values' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Get not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.edit_key %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports editing key values' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Edit not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.add_key %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports adding new keys' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Add not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.delete_key %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports deleting keys' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Delete not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align: center;">
-                        {% if cache_info.abilities.flush_cache %}
-                            <span class="ability-indicator ability-supported" title="{% trans 'Supports flushing entire cache' %}">✓</span>
-                        {% else %}
-                            <span class="ability-indicator ability-unsupported" title="{% trans 'Flush not supported' %}">—</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="abilities-legend">
-        <p class="abilities-legend-title">{% trans 'Abilities Legend:' %}</p>
-        <ul class="abilities-legend-list">
-            <li><strong>{% trans 'Query:' %}</strong> {% trans 'List and search keys with wildcard patterns' %}</li>
-            <li><strong>{% trans 'Get:' %}</strong> {% trans 'Retrieve individual key values' %}</li>
-            <li><strong>{% trans 'Edit:' %}</strong> {% trans 'Update individual key values' %}</li>
-            <li><strong>{% trans 'Add:' %}</strong> {% trans 'Create new keys in the cache' %}</li>
-            <li><strong>{% trans 'Delete:' %}</strong> {% trans 'Delete individual keys' %}</li>
-            <li><strong>{% trans 'Flush:' %}</strong> {% trans 'Clear all keys from the cache' %}</li>
-        </ul>
-    </div>
-    {% else %}
-    <div class="aligned">
-        <fieldset class="module">
-            <h2>{% trans 'Cache Configuration Required' %}</h2>
-            
-            <div class="form-row">
-                <div class="help-text">
-                    <p>{% trans 'To use the Cache panel, you must configure cache instances in your Django settings.' %}</p>
-                </div>
-            </div>
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'dj_control_room_base/vendor/highlight-github-dark.min.css' %}">
+<script src="{% static 'dj_control_room_base/vendor/highlight.min.js' %}"></script>
+<script src="{% static 'dj_control_room_base/vendor/highlight-python.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre.dcr-code-viewer__body code.language-python').forEach(function (el) {
+        hljs.highlightElement(el);
+    });
+});
+</script>
+{% endblock %}
 
-            <div class="form-row">
-                <h3>{% trans 'Please add a configuration dictionary to your settings.py like the example below:' %}</h3>
-                <fieldset class="collapse">
-                    <div class="form-row">
-                        <textarea readonly rows="25" class="vLargeTextField" style="font-family: monospace; width: 100%;">
-CACHES = {
+{% block panel_content %}
+
+<div class="dcr-page-header">
+  <div class="dcr-page-header__main">
+    <div class="dcr-page-header__icon dcr-icon-color--purple">
+      {% dcr_icon "layers" %}
+    </div>
+    <div class="dcr-page-header__body">
+      <h1 class="dcr-page-header__title">{% trans "DJ Cache Panel" %}</h1>
+      <p class="dcr-page-header__subtitle">
+        {% trans "Inspect and manage the cache backends configured for this project." %}
+      </p>
+    </div>
+  </div>
+</div>
+
+{% if caches_info %}
+<div class="dcr-data-table">
+  <div class="dcr-data-table__header">
+    <div class="dcr-data-table__header-info">
+      <h3 class="dcr-data-table__title">
+        {% trans "Cache Instances" %}
+        <span class="dcr-badge">{{ caches_info|length }} {% trans "CONFIGURED" %}</span>
+      </h3>
+    </div>
+  </div>
+  <div class="dcr-data-table__scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>{% trans "Cache Name" %}</th>
+          <th>{% trans "Backend" %}</th>
+          <th class="dcr-col--right">{% trans "Query" %}</th>
+          <th class="dcr-col--right">{% trans "Get" %}</th>
+          <th class="dcr-col--right">{% trans "Edit" %}</th>
+          <th class="dcr-col--right">{% trans "Add" %}</th>
+          <th class="dcr-col--right">{% trans "Delete" %}</th>
+          <th class="dcr-col--right">{% trans "Flush" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cache_info in caches_info %}
+        <tr>
+          <td>
+            <a href="{% url 'dj_cache_panel:key_search' cache_info.name %}" class="dcr-data-table__link">
+              <strong>{{ cache_info.name }}</strong>
+            </a>
+          </td>
+          <td>
+            <code class="dcr-code">{{ cache_info.backend_short }}</code>
+            {% if cache_info.error %}
+            <br><span class="dcr-status-text dcr-status-text--danger">{{ cache_info.error }}</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.query %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports key listing/search' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Key listing not supported' %}">—</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.get_key %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports getting key values' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Get not supported' %}">—</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.edit_key %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports editing key values' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Edit not supported' %}">—</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.add_key %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports adding new keys' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Add not supported' %}">—</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.delete_key %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports deleting keys' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Delete not supported' %}">—</span>
+            {% endif %}
+          </td>
+          <td class="dcr-col--right">
+            {% if cache_info.abilities.flush_cache %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--yes" title="{% trans 'Supports flushing entire cache' %}">✓</span>
+            {% else %}
+            <span class="dcr-ability-indicator dcr-ability-indicator--no" title="{% trans 'Flush not supported' %}">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="dcr-callout dcr-mt-lg">
+  <p class="dcr-callout__title">{% trans "Abilities Legend" %}</p>
+  <div class="dcr-callout__body">
+    <ul>
+      <li><strong>{% trans "Query:" %}</strong> {% trans "List and search keys with wildcard patterns" %}</li>
+      <li><strong>{% trans "Get:" %}</strong> {% trans "Retrieve individual key values" %}</li>
+      <li><strong>{% trans "Edit:" %}</strong> {% trans "Update individual key values" %}</li>
+      <li><strong>{% trans "Add:" %}</strong> {% trans "Create new keys in the cache" %}</li>
+      <li><strong>{% trans "Delete:" %}</strong> {% trans "Delete individual keys" %}</li>
+      <li><strong>{% trans "Flush:" %}</strong> {% trans "Clear all keys from the cache" %}</li>
+    </ul>
+  </div>
+</div>
+
+{% else %}
+<div class="dcr-empty">
+  <p class="dcr-empty__title">{% trans "Cache Configuration Required" %}</p>
+  <p class="dcr-empty__body">
+    {% trans "To use the Cache panel, you must configure cache instances in your Django settings, e.g.:" %}
+  </p>
+  <div class="dcr-code-viewer dcr-mt-md" style="text-align:left">
+    <pre class="dcr-code-viewer__body"><code class="language-python">CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379",
     }
-}
-</textarea>
-                    </div>
-                </fieldset>
-            </div>
-
-            
-
-            <div class="form-row">
-                <div class="help-text">
-                    <p><strong>{% trans 'After adding the configuration, restart your Django server to see your Cache instances.' %}</strong></p>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-    {% endif %}
+}</code></pre>
+  </div>
+  <p class="dcr-text-muted dcr-mt-md">
+    <strong>{% trans "After adding the configuration, restart your Django server to see your Cache instances." %}</strong>
+  </p>
 </div>
+{% endif %}
+
 {% endblock %}
