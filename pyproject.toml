@@ -33,7 +33,8 @@ classifiers = [
 ]
 keywords = ["django", "cache", "admin", "panel", "caching", "django-cache"]
 dependencies = [
-    "django>=4.2"
+    "django>=4.2",
+    "dj-control-room-base>=1.4.0",
 ]
 
 [project.entry-points."dj_control_room.panels"]
@@ -72,7 +73,7 @@ include-package-data = true
 exclude = ["tests*", "example_project*"]
 
 [tool.setuptools.package-data]
-"dj_cache_panel" = ["templates/**/*"]
+"dj_cache_panel" = ["templates/**/*", "static/**/*"]
 
 # pytest configuration
 [tool.pytest.ini_options]
