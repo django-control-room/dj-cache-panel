@@ -1,13 +1,12 @@
 import json
 from urllib.parse import unquote
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.contrib import admin, messages
+from django.contrib import messages
 from django.urls import reverse
 
 from dj_cache_panel.cache_panel import get_cache_panel
-from dj_cache_panel.conf import get_css_context
+from dj_cache_panel.conf import panel_config
 
 
 def _get_page_range(current_page, total_pages, window=2):
@@ -46,7 +45,7 @@ def _get_page_range(current_page, total_pages, window=2):
     return pages
 
 
-@staff_member_required
+@panel_config.permission_required("overview")
 def index(request):
     """
     Display all configured cache instances with their panel abilities.
@@ -76,18 +75,15 @@ def index(request):
             }
             caches_info.append(cache_info)
 
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-    context.update(
-        {
-            "caches_info": caches_info,
-            "title": "DJ Cache Panel - Instances",
-        }
+    context = panel_config.get_context(
+        request,
+        caches_info=caches_info,
+        title="DJ Cache Panel - Instances",
     )
     return render(request, "admin/dj_cache_panel/index.html", context)
 
 
-@staff_member_required
+@panel_config.permission_required("key_search")
 def key_search(request, cache_name: str):
     """
     View for searching/browsing cache keys.
@@ -113,17 +109,14 @@ def key_search(request, cache_name: str):
                 # Still redirect to show the error message
                 return redirect(reverse("dj_cache_panel:key_search", args=[cache_name]))
 
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-    context.update(
-        {
-            "cache_name": cache_name,
-            "cache_config": cache_config,
-            "query_supported": cache_panel.is_feature_supported("query"),
-            "get_key_supported": cache_panel.is_feature_supported("get_key"),
-            "flush_supported": cache_panel.is_feature_supported("flush_cache"),
-            "abilities": cache_panel.abilities,
-        }
+    context = panel_config.get_context(
+        request,
+        cache_name=cache_name,
+        cache_config=cache_config,
+        query_supported=cache_panel.is_feature_supported("query"),
+        get_key_supported=cache_panel.is_feature_supported("get_key"),
+        flush_supported=cache_panel.is_feature_supported("flush_cache"),
+        abilities=cache_panel.abilities,
     )
 
     # Get search parameters
@@ -226,7 +219,7 @@ def key_search(request, cache_name: str):
     return render(request, "admin/dj_cache_panel/key_search.html", context)
 
 
-@staff_member_required
+@panel_config.permission_required("key_detail")
 def key_detail(request, cache_name: str, key: str):
     """
     View for displaying the details of a specific cache key.
@@ -302,28 +295,23 @@ def key_detail(request, cache_name: str, key: str):
     cache_config = settings.CACHES.get(cache_name, {})
     key_exists = key_result.get("exists", False)
 
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-    context.update(
-        {
-            "cache_name": cache_name,
-            "cache_config": cache_config,
-            "key": key,
-            "key_value": key_result,
-            "key_exists": key_exists,
-            "value_display": value_display,
-            "query_supported": cache_panel.is_feature_supported("query"),
-            "get_key_supported": cache_panel.is_feature_supported("get_key"),
-            "delete_supported": cache_panel.is_feature_supported("delete_key")
-            and key_exists,
-            "edit_supported": cache_panel.is_feature_supported("edit_key")
-            and key_exists,
-        }
+    context = panel_config.get_context(
+        request,
+        cache_name=cache_name,
+        cache_config=cache_config,
+        key=key,
+        key_value=key_result,
+        key_exists=key_exists,
+        value_display=value_display,
+        query_supported=cache_panel.is_feature_supported("query"),
+        get_key_supported=cache_panel.is_feature_supported("get_key"),
+        delete_supported=cache_panel.is_feature_supported("delete_key") and key_exists,
+        edit_supported=cache_panel.is_feature_supported("edit_key") and key_exists,
     )
     return render(request, "admin/dj_cache_panel/key_detail.html", context)
 
 
-@staff_member_required
+@panel_config.permission_required("key_add")
 def key_add(request, cache_name: str):
     """
     View for adding a new cache key.
@@ -386,13 +374,10 @@ def key_add(request, cache_name: str):
             )
 
     # GET request - display the form
-    context = admin.site.each_context(request)
-    context.update(get_css_context())
-    context.update(
-        {
-            "cache_name": cache_name,
-            "cache_config": cache_config,
-            "edit_supported": cache_panel.is_feature_supported("edit_key"),
-        }
+    context = panel_config.get_context(
+        request,
+        cache_name=cache_name,
+        cache_config=cache_config,
+        edit_supported=cache_panel.is_feature_supported("edit_key"),
     )
     return render(request, "admin/dj_cache_panel/key_add.html", context)
