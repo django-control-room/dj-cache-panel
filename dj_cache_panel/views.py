@@ -45,7 +45,7 @@ def _get_page_range(current_page, total_pages, window=2):
     return pages
 
 
-@panel_config.permission_required("overview")
+@panel_config.permission_required("cache_list")
 def index(request):
     """
     Display all configured cache instances with their panel abilities.
