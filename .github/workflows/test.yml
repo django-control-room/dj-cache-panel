@@ -73,14 +73,12 @@ jobs:
 
       - name: Install package and dependencies
         run: |
-          # django-valkey 0.4.1+ imports PY313, which Django 4.2 lacks.
-          # Python 3.9 is also unsupported by django-valkey.
-          if [ "${{ matrix.django-version }}" = "4.2" ] || [ "${{ matrix.python-version }}" = "3.9" ]; then
-            pip install .[dev]
-          else
-            pip install .[dev,valkey]
-          fi
+          make install
           pip install "Django~=${{ matrix.django-version }}.0"
+        env:
+          # Used by `make install` to skip django-valkey on Django 4.2
+          # (0.4.1+ imports PY313, which 4.2 lacks).
+          DJANGO_VERSION: ${{ matrix.django-version }}
 
       - name: Run tests with coverage
         run: pytest --cov=dj_cache_panel --cov-report=xml

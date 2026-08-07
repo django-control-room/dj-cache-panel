@@ -49,11 +49,14 @@ install_requirements:
 	python -m pip install -r requirements.txt
 
 install: install_requirements
-	@if python -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)' 2>/dev/null; then \
-		echo "Installing with valkey support (Python 3.10+)..."; \
+	@# Skip valkey on Python < 3.10, and on Django 4.2 (django-valkey 0.4.1+
+	@# imports PY313, which Django 4.2 lacks). Pass DJANGO_VERSION=4.2 from CI.
+	@if python -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)' 2>/dev/null \
+		&& [ "$${DJANGO_VERSION:-}" != "4.2" ]; then \
+		echo "Installing with valkey support (Python 3.10+, Django != 4.2)..."; \
 		python -m pip install -e .[dev,valkey]; \
 	else \
-		echo "Installing base package (valkey not available or Python < 3.10)..."; \
+		echo "Installing base package (skipping valkey)..."; \
 		python -m pip install -e .[dev]; \
 	fi
 
