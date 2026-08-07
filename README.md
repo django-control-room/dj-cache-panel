@@ -116,4 +116,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Development Setup
 
-Want to contribute or set up the project for local development? See [docs/development.md](docs/development.md) for prerequisites, Docker/virtualenv setup, running the example project, and the test suite.
+Want to contribute or set up the project for local development? See [docs/development.md](docs/development.md) for prerequisites, Docker/virtualenv setup, running the example project, and the test suite. 
