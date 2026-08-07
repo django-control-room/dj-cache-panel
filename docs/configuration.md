@@ -21,17 +21,48 @@ CACHES = {
 
 ## Advanced Configuration
 
-For advanced use cases, you can customize behavior with `DJ_CACHE_PANEL_SETTINGS`:
+For advanced use cases, you can customize behavior with `DJ_CACHE_PANEL_SETTINGS`.
+A full annotated example:
 
 ```python
 DJ_CACHE_PANEL_SETTINGS = {
-    # Custom panel mappings
-    "BACKEND_PANEL_EXTENSIONS": {},
-    
-    # Per-cache ability overrides
-    "CACHES": {},
+    # CSS: load built-in styles and/or inject your own
+    "LOAD_DEFAULT_CSS": True,
+    # Static paths are relative to app's static/ dir (e.g. 'myapp/css/overrides.css'
+    # for a file at myapp/static/myapp/css/overrides.css). Full URLs also accepted.
+    "EXTRA_CSS": [],
+
+    # Optional: completely replace the default backend-to-panel mapping
+    # "BACKEND_PANEL_MAP": {}
+    #
+    # Optional: extend or override specific backend-to-panel mappings
+    # Panel classes can be specified as:
+    #   - Simple class name (e.g., "RedisCachePanel") - for built-in panels
+    #   - Full module path (e.g., "myapp.panels.CustomCachePanel") - for custom panels
+    "BACKEND_PANEL_EXTENSIONS": {
+        # Example: Map a custom backend to a custom panel class
+        # "myapp.backends.CustomCache": "myapp.panels.CustomCachePanel",
+        # Example: Override a built-in backend mapping
+        # "django.core.cache.backends.redis.RedisCache": "myapp.panels.MyRedisCachePanel",
+    },
+    # Optional: per-cache settings overrides
+    # Typically used to lock down a cache instance to only certain abilities
+    "CACHES": {
+        "redis": {
+            "abilities": {  # Optional: override the abilities for this cache instance
+                # "query": True,
+                # "get_key": True,
+                # "delete_key": True,
+                # "edit_key": True,
+                # "add_key": True,
+                # "flush_cache": True,
+            },
+        }
+    },
 }
 ```
+
+The sections below cover each option in more detail.
 
 ### Custom Panel Mappings
 

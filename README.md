@@ -7,12 +7,16 @@
 [![Downloads](https://img.shields.io/pypi/dm/dj-cache-panel.svg)](https://pypi.org/project/dj-cache-panel/)
 
 
-
 # Django Cache Panel
 
 A universal cache inspector for Django.
 
 ![Django Cache Panel - Instance List](https://raw.githubusercontent.com/django-control-room/dj-cache-panel/main/images/instance_list.png)
+
+**Compatible with [dj-control-room](https://github.com/django-control-room/dj-control-room).** Register this panel in the Control Room to manage it from a centralized dashboard.
+
+- **Official site:** [djangocontrolroom.com](https://djangocontrolroom.com)
+- **Project repo:** [dj-control-room](https://github.com/django-control-room/dj-control-room)
 
 ## Docs
 
@@ -30,26 +34,10 @@ A universal cache inspector for Django.
 - **Backend Agnostic**: Works with any Django cache backend (with varying feature support)
 
 
-### Project Structure
-
-```
-dj-cache-panel/
-├── dj_cache_panel/          # Main package
-│   ├── templates/           # Django templates
-│   ├── cache_panels.py      # Backend specific panels
-│   ├── views.py             # Django views
-│   └── urls.py              # URL patterns
-├── example_project/         # Example Django project
-├── tests/                   # Test suite
-├── images/                  # Screenshots for README
-└── requirements.txt         # Development dependencies
-```
-
 ## Requirements
 
 - Python 3.9-3.14
 - Django 4.2+
-
 
 
 ## Screenshots
@@ -78,132 +66,46 @@ Get a list of all your caches as well as the allowed capabilities for each cache
 
 ## Installation
 
-### 1. Install the Package
-
 ```bash
-pip install dj-cache-panel
+pip install dj-cache-panel dj-control-room
 ```
 
-#### Optional: Valkey Support
-
-Django Cache Panel supports **Valkey** cache backend as an optional dependency. Valkey requires Python 3.10+.
+Optional Valkey support (requires Python 3.10+):
 
 ```bash
-# Install with Valkey support
-pip install dj-cache-panel[valkey]
+pip install dj-cache-panel[valkey] dj-control-room
 ```
 
-This installs:
-- `django-valkey` - Valkey cache backend for Django
-
-### 2. Add to Django Settings
-
-Add `dj_cache_panel` to your `INSTALLED_APPS`:
+Add it to `INSTALLED_APPS`, include its URLs, and migrate:
 
 ```python
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'dj_cache_panel',  # Add this line
-    # ... your other apps
+    # ...
+    "dj_control_room_base",
+    "dj_cache_panel",
+    "dj_control_room",
+    # ...
 ]
 ```
 
-### 3. Configure Cache Instances
-
-Django cache panel will use the `CACHES` setting normally defined in django projects
-
 ```python
-CACHES = {
-    ...
-}
-```
-
-Additionally, you can also define some extra settings for extending or changing behavior
-of the existing cache panels.
-
-Note: these are advanced settings; the vast majority of django projects will not need to
-define any of these
-
-```python
-DJ_CACHE_PANEL_SETTINGS = {
-    # CSS: load built-in styles and/or inject your own
-    "LOAD_DEFAULT_CSS": True,
-    # Static paths are relative to app's static/ dir (e.g. 'myapp/css/overrides.css'
-    # for a file at myapp/static/myapp/css/overrides.css). Full URLs also accepted.
-    "EXTRA_CSS": [],
-
-    # Optional: completely replace the default backend-to-panel mapping
-    # "BACKEND_PANEL_MAP": {}
-    #
-    # Optional: extend or override specific backend-to-panel mappings
-    # Panel classes can be specified as:
-    #   - Simple class name (e.g., "RedisCachePanel") - for built-in panels
-    #   - Full module path (e.g., "myapp.panels.CustomCachePanel") - for custom panels
-    "BACKEND_PANEL_EXTENSIONS": {
-        # Example: Map a custom backend to a custom panel class
-        # "myapp.backends.CustomCache": "myapp.panels.CustomCachePanel",
-        # Example: Override a built-in backend mapping
-        # "django.core.cache.backends.redis.RedisCache": "myapp.panels.MyRedisCachePanel",
-    },
-    # Optional: per-cache settings overrides
-    # Typically used to lock down a cache instance to only certain abilities
-    "CACHES": {
-        "redis": {
-            "abilities": {  # Optional: override the abilities for this cache instance
-                # "query": True,
-                # "get_key": True,
-                # "delete_key": True,
-                # "edit_key": True,
-                # "add_key": True,
-                # "flush_cache": True,
-            },
-        }
-    },
-}
-```
-
-
-
-
-### 4. Include URLs
-
-Add the Cache Panel URLs to your main `urls.py`:
-
-```python
-from django.contrib import admin
-from django.urls import path, include
-
 urlpatterns = [
-    path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),  # Add this line
-    path('admin/', admin.site.urls),
+    path("admin/dj-control-room-base/", include("dj_control_room_base.urls")),
+    path("admin/dj-cache-panel/", include("dj_cache_panel.urls")),
+    path("admin/dj-control-room/", include("dj_control_room.urls")),
+    path("admin/", admin.site.urls),
 ]
 ```
 
-### 5. Run Migrations and Create Superuser
+The panel reads your existing Django `CACHES` setting. no extra instance config required for most projects. Advanced options (backend panel mappings, per-cache ability overrides, CSS) are covered in [Configuration](https://django-control-room.github.io/dj-cache-panel/configuration/).
 
 ```bash
 python manage.py migrate
-python manage.py createsuperuser  # If you don't have an admin user
 ```
 
-### 6. Access the Panel
+Then visit `/admin/` and look for the "DJ CACHE PANEL" section.
 
-1. Start your Django development server:
-   ```bash
-   python manage.py runserver
-   ```
-
-2. Navigate to the Django admin at `http://127.0.0.1:8000/admin/`
-
-3. Look for the "DJ_CACHE_PANEL" section in the admin interface
-
-4. Click "Manage Cache keys and values" to start browsing your cache instances
-
+For the full walkthrough and production recommendations, see the [Installation](https://django-control-room.github.io/dj-cache-panel/installation/) and [Configuration](https://django-control-room.github.io/dj-cache-panel/configuration/) docs. See [Scopes](https://django-control-room.github.io/dj-cache-panel/scopes/) for per-view permission scopes.
 
 
 ## License
@@ -214,96 +116,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Development Setup
 
-If you want to contribute to this project or set it up for local development:
-
-### Prerequisites
-
-- Python 3.9-3.14 (valkey requires 3.10+)
-- Redis, Valkey, and Memcached servers running locally (or use Docker) 
-- Git
-- Docker (recommended for simplified setup)
-
-It is recommended that you use docker since it will automate much of dev env setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/django-control-room/dj-cache-panel.git
-cd dj-cache-panel
-```
-
-### 2a. Set up dev environment using virtualenv
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install base package and development dependencies
-make install
-
-# Or manually
-pip install -e .
-pip install -r requirements.txt
-```
-
-### 2b. Set up dev environment using docker
-
-```bash
-# Default setup with Python 3.10
-make docker_up
-
-# Or with different Python version
-PYTHON_VERSION=3.11 make docker_up
-
-# Then open a shell
-make docker_shell
-```
-
-**Environment Variables:**
-- `PYTHON_VERSION=3.11` - Use specific Python version for Docker (default: 3.10)
-
-### 3. Set Up Example Project
-
-The repository includes an example Django project for development and testing
-
-```bash
-cd example_project
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-### 4. Populate Test Data (Optional)
-An optional CLI tool for populating cache keys automatically is included in the
-example django project in this code base.
-
-```bash
-python manage.py populate_redis
-```
-
-This command will populate your cache instance with sample data for testing.
-
-### 6. Run the Development Server
-
-```bash
-python manage.py runserver
-```
-
-Visit `http://127.0.0.1:8000/admin/` to access the Django admin with Cache Panel.
-
-### 7. Running Tests
-
-The project includes a comprehensive test suite. You can run them by using make or
-by invoking pytest directly:
-
-```bash
-# Test in Docker container
-make test_docker
-
-# Test with specific Python version
-PYTHON_VERSION=3.11 make test_docker
-
-# Test without Docker (requires redis, valkey, memcached services running)
-make test_local
-```
-
-**Note:** When using python 3.10 or greater you can enable valkey support by using the django-valkey package
+Want to contribute or set up the project for local development? See [docs/development.md](docs/development.md) for prerequisites, Docker/virtualenv setup, running the example project, and the test suite. 

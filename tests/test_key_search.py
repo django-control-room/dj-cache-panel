@@ -168,7 +168,10 @@ class TestKeySearchView(CacheTestCase):
                 self.assertContains(response, "showing 41 to 50")
                 # Template renders page_range "..." as Unicode ellipsis (…)
                 self.assertContains(response, "\u2026")
-                self.assertContains(response, '<span class="this-page">5</span>')
+                self.assertContains(
+                    response,
+                    '<span class="dcr-pagination__page dcr-pagination__page--active">5</span>',
+                )
 
     def test_key_search_per_page_option(self):
         """Test that per_page option is respected."""

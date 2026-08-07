@@ -1,136 +1,107 @@
 {% extends "admin/dj_cache_panel/base.html" %}
-{% load i18n admin_urls static %}
+{% load i18n %}
 
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-    &rsaquo; <a href="{% url 'dj_cache_panel:index' %}">{% trans 'Cache Instances' %}</a>
-    &rsaquo; <a href="{% url 'dj_cache_panel:key_search' cache_name %}">{{ cache_name }}</a>
-    &rsaquo; {{ key }}
-</div>
+{% block panel_breadcrumbs %}
+{{ block.super }}
+&rsaquo; <a href="{% url 'dj_cache_panel:key_search' cache_name %}">{{ cache_name }}</a>
+&rsaquo; {{ key }}
 {% endblock %}
 
-{% block content %}
-<div class="module">
-    <!-- Messages -->
-    {% if messages %}
-    <div class="messagelist">
-        {% for message in messages %}
-        <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
+{% block panel_content %}
 
-    <!-- Key Does Not Exist Error -->
-    {% if not key_exists %}
-    <div class="messagelist">
-        <div class="error">
-            <strong>{% trans 'Error:' %}</strong> {% trans 'This key does not exist in the cache.' %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Key Header with Delete Button -->
-    <div class="key-detail-header">
-        <h1>{% trans 'Key Detail' %}</h1>
-        {% if delete_supported and key_exists %}
-        <form method="post" class="key-detail-delete-form" onsubmit="return confirm('{% trans 'Are you sure you want to delete this key? This action cannot be undone.' %}');">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete">
-            <input type="submit" value="{% trans 'Delete Key' %}" class="delete-button">
-        </form>
-        {% endif %}
-    </div>
-
-    <!-- Key Information -->
-    <div class="module">
-        <h2>{% trans 'Key Information' %}</h2>
-        <br>
-        <div class="form-row">
-            <div class="field-box">
-                <label><strong>{% trans 'Key Name:' %}</strong></label>
-                <div class="readonly">
-                    <code>{{ key }}</code>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="field-box">
-                <label><strong>{% trans 'Cache Backend:' %}</strong></label>
-                <div class="readonly">
-                    <code>{{ cache_config.BACKEND }}</code>
-                </div>
-            </div>
-        </div>
-
-        {% if key_value.type %}
-        <div class="form-row">
-            <div class="field-box">
-                <label><strong>{% trans 'Value Type:' %}</strong></label>
-                <div class="readonly">
-                    <code>{{ key_value.type }}</code>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Value Editor -->
-    <div class="module">
-        <h2>{% trans 'Value' %}</h2>
-        <br>
-        <form method="post" id="edit-form">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update">
-            <div class="form-row">
-                <div class="field-box">
-                    <label for="value"><strong>{% trans 'Value:' %}</strong></label>
-                    <textarea 
-                        id="value" 
-                        name="value" 
-                        rows="10" 
-                        class="vLargeTextField" 
-                        style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; width: 100%;"
-                        {% if not edit_supported or not key_exists %}disabled{% endif %}
-                    >{{ value_display }}</textarea>
-                    {% if not key_exists %}
-                    <p class="help" style="color: #999; margin-top: 5px;">
-                        {% trans 'This key does not exist. Cannot edit or delete.' %}
-                    </p>
-                    {% elif not edit_supported %}
-                    <p class="help" style="color: #999; margin-top: 5px;">
-                        {% trans 'Editing is not supported for this cache backend.' %}
-                    </p>
-                    {% else %}
-                    <p class="help" style="margin-top: 5px;">
-                        {% trans 'Modify the value above and click Save to update the cache key.' %}
-                    </p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="field-box">
-                    <label for="timeout"><strong>{% trans 'Timeout (seconds):' %}</strong></label>
-                    <input 
-                        type="number" 
-                        id="timeout" 
-                        name="timeout" 
-                        class="vIntegerField" 
-                        step="0.1"
-                        min="0"
-                        placeholder="{% trans 'Leave empty to use cache default or preserve existing TTL' %}"
-                        {% if not edit_supported or not key_exists %}disabled{% endif %}
-                    >
-                    <p class="help" style="margin-top: 5px;">
-                        {% trans 'Optional: Set expiration time in seconds. Leave empty to use cache default or preserve existing TTL.' %}
-                    </p>
-                </div>
-            </div>
-            <div class="submit-row">
-                <input type="submit" value="{% trans 'Update Value' %}" class="default" {% if not edit_supported or not key_exists %}disabled{% endif %}>
-            </div>
-        </form>
-    </div>
+{% if not key_exists %}
+<div class="dcr-callout dcr-callout--danger">
+  <p class="dcr-callout__title">{% trans "Error" %}</p>
+  <p class="dcr-callout__body">{% trans "This key does not exist in the cache." %}</p>
 </div>
+{% endif %}
+
+<a href="{% url 'dj_cache_panel:key_search' cache_name %}" class="dcr-back-link">{% blocktrans %}Back to {{ cache_name }}{% endblocktrans %}</a>
+
+<div class="dcr-page-header">
+  <div class="dcr-page-header__body">
+    <h1 class="dcr-page-header__title dcr-font-mono dcr-break-all">{{ key }}</h1>
+    <p class="dcr-page-header__subtitle">
+      {{ cache_name }} &middot; <code class="dcr-code">{{ cache_config.BACKEND }}</code>
+    </p>
+  </div>
+  {% if delete_supported and key_exists %}
+  <div class="dcr-page-header__actions">
+    <form method="post" onsubmit="return confirm('{% trans "Are you sure you want to delete this key? This action cannot be undone." %}');">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="delete">
+      <button type="submit" class="dcr-btn dcr-btn--danger">{% trans "Delete Key" %}</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+
+<div class="dcr-section-header dcr-section-header--plain">
+  <h2 class="dcr-section-header__title">{% trans "Key Information" %}</h2>
+</div>
+
+<dl class="dcr-dl">
+  <div class="dcr-dl__row">
+    <dt class="dcr-dl__label">{% trans "Key Name" %}</dt>
+    <dd class="dcr-dl__value dcr-dl__value--mono dcr-break-all">{{ key }}</dd>
+  </div>
+  <div class="dcr-dl__row">
+    <dt class="dcr-dl__label">{% trans "Cache Backend" %}</dt>
+    <dd class="dcr-dl__value dcr-dl__value--mono">{{ cache_config.BACKEND }}</dd>
+  </div>
+  {% if key_value.type %}
+  <div class="dcr-dl__row">
+    <dt class="dcr-dl__label">{% trans "Value Type" %}</dt>
+    <dd class="dcr-dl__value"><code class="dcr-code">{{ key_value.type }}</code></dd>
+  </div>
+  {% endif %}
+</dl>
+
+<div class="dcr-section-header dcr-mt-lg">
+  <h2 class="dcr-section-header__title">{% trans "Value" %}</h2>
+</div>
+
+<form method="post" id="edit-form" class="dcr-form dcr-form--flush">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="update">
+  <div class="dcr-field">
+    <label class="dcr-field__label" for="value">{% trans "Value" %}</label>
+    <textarea
+      id="value"
+      name="value"
+      rows="10"
+      class="dcr-input dj-cache-panel__value-textarea"
+      {% if not edit_supported or not key_exists %}disabled{% endif %}
+    >{{ value_display }}</textarea>
+    <p class="dcr-text-sm dcr-text-muted dcr-mt-xs">
+      {% if not key_exists %}
+      {% trans "This key does not exist. Cannot edit or delete." %}
+      {% elif not edit_supported %}
+      {% trans "Editing is not supported for this cache backend." %}
+      {% else %}
+      {% trans "Modify the value above and click Save to update the cache key." %}
+      {% endif %}
+    </p>
+  </div>
+  <div class="dcr-field">
+    <label class="dcr-field__label" for="timeout">{% trans "Timeout (seconds)" %}</label>
+    <input
+      type="number"
+      id="timeout"
+      name="timeout"
+      class="dcr-input"
+      step="0.1"
+      min="0"
+      placeholder="{% trans 'Leave empty to use cache default or preserve existing TTL' %}"
+      {% if not edit_supported or not key_exists %}disabled{% endif %}
+    >
+    <p class="dcr-text-sm dcr-text-muted dcr-mt-xs">
+      {% trans "Optional: Set expiration time in seconds. Leave empty to use cache default or preserve existing TTL." %}
+    </p>
+  </div>
+  <div class="dcr-form__row">
+    <button type="submit" class="dcr-btn dcr-btn--primary" {% if not edit_supported or not key_exists %}disabled{% endif %}>{% trans "Update Value" %}</button>
+  </div>
+</form>
+
 {% endblock %}

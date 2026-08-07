@@ -1,0 +1,15 @@
+/*
+ * DJ Cache Panel - panel-specific overrides.
+ */
+
+.dcr-form--flush {
+    padding: 0;
+}
+
+.dj-cache-panel__value-textarea {
+    width: 100%;
+    min-height: 200px;
+    font-family: var(--dcr-font-mono, 'Monaco', 'Menlo', 'Ubuntu Mono', monospace);
+    font-size: 13px;
+    resize: vertical;
+}
