@@ -73,11 +73,12 @@ jobs:
 
       - name: Install package and dependencies
         run: |
-          if [ "${{ matrix.python-version }}" = "3.9" ]; then
+          # django-valkey 0.4.1+ imports PY313, which Django 4.2 lacks.
+          # Python 3.9 is also unsupported by django-valkey.
+          if [ "${{ matrix.django-version }}" = "4.2" ] || [ "${{ matrix.python-version }}" = "3.9" ]; then
             pip install .[dev]
           else
             pip install .[dev,valkey]
-
           fi
           pip install "Django~=${{ matrix.django-version }}.0"
 
