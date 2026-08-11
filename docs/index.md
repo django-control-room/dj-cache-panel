@@ -45,7 +45,7 @@ defined classes that can customize logic for these abilities.
 - [Installation](installation.md)
 - [Configuration](configuration.md)
 - [Features](features.md)
-- [Development](development.md)
+- [Contributing](contributing.md)
 - [Testing](testing.md)
 
 ## Requirements
