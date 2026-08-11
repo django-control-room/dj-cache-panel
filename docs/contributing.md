@@ -1,5 +1,4 @@
-# Development
-
+# Contributing
 Contributing to Django Cache Panel or setting up for local development.
 
 ## Prerequisites

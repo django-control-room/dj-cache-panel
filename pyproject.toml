@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dj-cache-panel"
-version = "0.5.0"
+version = "0.6.0"
 description = "A Django Admin panel for browsing and inspecting Django cache backends"
 readme = "README.md"
 license = {text = "MIT"}
@@ -35,7 +35,7 @@ classifiers = [
 keywords = ["django", "cache", "admin", "panel", "caching", "django-cache"]
 dependencies = [
     "django>=4.2",
-    "dj-control-room-base>=1.4.0",
+    "dj-control-room-base>=1.5.0",
 ]
 
 [project.entry-points."dj_control_room.panels"]

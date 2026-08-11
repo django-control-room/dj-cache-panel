@@ -42,11 +42,11 @@ Note: Even if the a functionality appears not available in the matrix above, `dj
 defined classes that can customize logic for these abilities.
 ## Quick Links
 
-- [Installation](installation.md)
-- [Configuration](configuration.md)
-- [Features](features.md)
-- [Development](development.md)
-- [Testing](testing.md)
+- [Installation](https://django-control-room.github.io/dj-cache-panel/installation/)
+- [Configuration](https://django-control-room.github.io/dj-cache-panel/configuration/)
+- [Features](https://django-control-room.github.io/dj-cache-panel/features/)
+- [Contributing](https://django-control-room.github.io/dj-cache-panel/contributing/)
+- [Testing](https://django-control-room.github.io/dj-cache-panel/testing/)
 
 ## Requirements
 

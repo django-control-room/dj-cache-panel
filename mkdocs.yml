@@ -44,9 +44,8 @@ nav:
     - Scopes: scopes.md
   - Features:
     - Features: features.md
-  - Development:
-    - Development Setup: development.md
-    - Testing: testing.md
+  - Contributing: contributing.md
+  - Testing: testing.md
 
 markdown_extensions:
   - pymdownx.highlight:
